@@ -1,9 +1,11 @@
 const express = require('express');
 
-let router = express.Router();
-    router.get('/users',(req,res) => {
-        res.render('users');
-    })
+const router = express.Router();
+
+const userC = require('../controller/userC.js');
+
+router.get('/users',userC.getUsers)
+
 
 
 module.exports = router;
