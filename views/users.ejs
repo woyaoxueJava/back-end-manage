@@ -13,7 +13,7 @@
       </div> -->
       <div class="row">
         <div class="col-md-4">
-          <form>
+          <form id="form">
             <h2>添加新用户</h2>
             <div class="form-group">
               <label for="email">邮箱</label>
@@ -33,7 +33,7 @@
               <input id="password" class="form-control" name="password" type="text" placeholder="密码">
             </div>
             <div class="form-group">
-              <button class="btn btn-primary" type="submit">添加</button>
+              <button class="btn btn-primary" type="submit" id="addUser">添加</button>
             </div>
           </form>
         </div>
@@ -54,9 +54,9 @@
                 <th class="text-center" width="100">操作</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="tbody">
               <% for (var i = 0; i < results.length; i++) {%>
-              <tr>
+              <tr id="<%= 'tr' + results[i].id %>">
                 <td class="text-center"><input type="checkbox"></td>
                 <td class="text-center"><img class="avatar" src="<%= results[i].avatar %>"></td>
                 <td><%= results[i].email %></td>
@@ -65,7 +65,7 @@
                 <td><%= results[i].status %></td>
                 <td class="text-center">
                   <a href="post-add.php" class="btn btn-default btn-xs">编辑</a>
-                  <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+                  <a href="javascript:viod(0);" class="btn btn-danger btn-xs " id="<%= results[i].id %>">删除</a>
                 </td>
               </tr>
               <% } %>
@@ -115,3 +115,75 @@
   </div>
 <!-- footer -->
   <% include ./layout/footer %>
+
+  <script type="text/html" id="userTem">
+    {{each data}}
+      <tr id=" tr{{+ $value.id}} ">
+        <td class="text-center"><input type="checkbox"></td>
+        <td class="text-center"><img class="avatar" src=" {{ $value.avatar }} "></td>
+        <td>{{ $value.email }}</td>
+        <td>{{ $value.slug }}</td>
+        <td>{{ $value.nickname }}</td>
+        <td>{{ $value.status }}</td>
+        <td class="text-center">
+          <a href="post-add.php" class="btn btn-default btn-xs">编辑</a>
+          <a href="javascript:viod(0);" class="btn btn-danger btn-xs " id="{{ $value.id }}">删除</a>
+        </td>
+      </tr>
+     {{/each}}
+  
+  </script>
+
+  <script>
+  //加载users页面的方法
+
+  function getAllUser() {
+    $.ajax({
+      method: 'GET',
+      url: '/getAllUser',
+      dataType: 'json',
+      success: (res) => {
+        let {status, msg, data} = res;
+        if (status == 200){
+          let html = template('userTem',{data})
+          $('#tbody').html(html);
+        }
+       }
+    })
+  }
+
+  $('#tbody').on('click','.btn-danger',function(e) {
+    e.preventDefault();
+    var id = '#tr' + this.id;
+    $(id).remove();
+  })
+
+  //添加user
+
+$('#addUser').on('click',function(e){
+    e.preventDefault();
+    
+    let formData = new FormData($('#form')[0])
+    $.ajax({
+      method: 'POST',
+      url: '/addUser',
+      data: formData,
+      dataType: 'json',
+      contentType: false,
+      processData: false,
+      success: (res) => {
+        let {status,msg} = res;
+        console.log(res)
+        if (status == 200) {
+            getAllUser()
+        } else {
+          console.log(msg)
+        }
+      }
+    })
+
+})
+
+  
+  
+  </script>
