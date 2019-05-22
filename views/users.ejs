@@ -42,7 +42,7 @@
             <!-- show when multiple checked -->
             <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
           </div>
-          <table class="table table-striped table-bordered table-hover">
+          <table class="table table-striped table-bordered table-hover" id="table">
             <thead>
                <tr>
                 <th class="text-center" width="40"><input type="checkbox"></th>
@@ -65,7 +65,7 @@
                 <td><%= results[i].status %></td>
                 <td class="text-center">
                   <a href="post-add.php" class="btn btn-default btn-xs">编辑</a>
-                  <a href="javascript:viod(0);" class="btn btn-danger btn-xs " id="<%= results[i].id %>">删除</a>
+                  <a href="javascript:viod(0);" class="btn btn-danger btn-xs " id="<%=results[i].id%>">删除</a>
                 </td>
               </tr>
               <% } %>
@@ -76,49 +76,13 @@
     </div>
   </div>
 
-  <div class="aside">
-    <div class="profile">
-      <img class="avatar" src="/uploads/avatar.jpg">
-      <h3 class="name">布头儿</h3>
-    </div>
-    <ul class="nav">
-      <li>
-        <a href="index.html"><i class="fa fa-dashboard"></i>仪表盘</a>
-      </li>
-      <li>
-        <a href="#menu-posts" class="collapsed" data-toggle="collapse">
-          <i class="fa fa-thumb-tack"></i>文章<i class="fa fa-angle-right"></i>
-        </a>
-        <ul id="menu-posts" class="collapse">
-          <li><a href="posts.html">所有文章</a></li>
-          <li><a href="post-add.html">写文章</a></li>
-          <li><a href="categories.html">分类目录</a></li>
-        </ul>
-      </li>
-      <li>
-        <a href="comments.html"><i class="fa fa-comments"></i>评论</a>
-      </li>
-      <li class="active">
-        <a href="users.html"><i class="fa fa-users"></i>用户</a>
-      </li>
-      <li>
-        <a href="#menu-settings" class="collapsed" data-toggle="collapse">
-          <i class="fa fa-cogs"></i>设置<i class="fa fa-angle-right"></i>
-        </a>
-        <ul id="menu-settings" class="collapse">
-          <li><a href="nav-menus.html">导航菜单</a></li>
-          <li><a href="slides.html">图片轮播</a></li>
-          <li><a href="settings.html">网站设置</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+  <% include ./layout/aside %>
 <!-- footer -->
   <% include ./layout/footer %>
 
   <script type="text/html" id="userTem">
     {{each data}}
-      <tr id=" tr{{+ $value.id}} ">
+      <tr id="tr{{+ $value.id}}">
         <td class="text-center"><input type="checkbox"></td>
         <td class="text-center"><img class="avatar" src=" {{ $value.avatar }} "></td>
         <td>{{ $value.email }}</td>
@@ -127,7 +91,7 @@
         <td>{{ $value.status }}</td>
         <td class="text-center">
           <a href="post-add.php" class="btn btn-default btn-xs">编辑</a>
-          <a href="javascript:viod(0);" class="btn btn-danger btn-xs " id="{{ $value.id }}">删除</a>
+          <a href="javascript:viod(0);" class="btn btn-danger btn-xs " id="{{$value.id}}">删除</a>
         </td>
       </tr>
      {{/each}}
@@ -152,10 +116,18 @@
     })
   }
 
-  $('#tbody').on('click','.btn-danger',function(e) {
+  $('#table').on('click','.btn-danger',function(e) {
     e.preventDefault();
-    var id = '#tr' + this.id;
+    var id = '#tr'+this.id;
     $(id).remove();
+    $.ajax({
+      url: '/delUser?id='+e.target.id,
+      type: 'GET',
+      success: res => {
+        //无需跳转
+      }
+
+    })
   })
 
   //添加user
@@ -175,7 +147,8 @@ $('#addUser').on('click',function(e){
         let {status,msg} = res;
         console.log(res)
         if (status == 200) {
-            getAllUser()
+            getAllUser();
+            $('#form')[0].reset();
         } else {
           console.log(msg)
         }

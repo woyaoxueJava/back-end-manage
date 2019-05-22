@@ -33,3 +33,24 @@ module.exports = {
     }
 
 }
+
+//************ */
+// let sql = ` SELECT 
+//             posts.*,users.nickname, categories.name  
+//             FROM posts LEFT JOIN users ON 
+//             posts.user_id = users.id 
+//             LEFT JOIN categories ON 
+//             posts.category_id = categories.id 
+//             ORDER BY posts.id desc LIMIT ${(page - 1) * pagesize}, ${pagesize};
+//             SELECT count(*) FROM posts `
+
+// var fakeSql = `select
+//                posts.*, users.nickname, categories.name
+//                from posts 
+//                left join users 
+//                on posts.user_id = users.id
+//                left join categories 
+//                on posts.category_id = categoyies.id
+//                order by posts.id desc
+//                limit ${(page -1)*pagesize}, ${pagesize}
+//                select count(*) from posts `

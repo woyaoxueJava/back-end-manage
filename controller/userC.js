@@ -50,10 +50,31 @@ module.exports = {
 
               })
             
-      })
-
-
-        
+      })    
+    },
+    delUser(req,res) {
+        let id = req.query.id;
+        usersdb.delUser(id,(err,results) => {
+            if (err) {
+                res.send({
+                    status: 400,
+                    msg: 'failed',
+                    data: null
+                })
+            } else {
+                res.send({
+                    status: 200,
+                    msg: 'success',
+                    data: results
+                })
+            }
+        })
+    },
+    profile(req,res) {
+        res.render('profile');
+    },
+    login(req,res) {
+        res.render('login')
     }
 }
 

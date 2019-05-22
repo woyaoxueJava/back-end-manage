@@ -8,10 +8,16 @@ module.exports = {
     addUser(fields,callback) {
         let sqlStr = `INSERT INTO users (slug,email,password,nickname,status,avatar)
             VALUES 
-            ('${fields.slug}','${fields.email}','${fields.password}','${fields.nickname}','activated','/static/uploads/avatar.jpg')`;
+            ('${fields.slug}','${fields.email}',
+            '${fields.password}','${fields.nickname}',
+            'activated','/static/uploads/avatar.jpg')`;
             
         db.query(sqlStr,callback);
         
+    },
+    delUser(id,callback) {
+        let sqlStr = `delete from users where id = ${id}`;
+        db.query(sqlStr,callback)
     }
 }
 

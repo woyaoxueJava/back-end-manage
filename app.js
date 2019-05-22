@@ -3,6 +3,12 @@ const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const userRouter = require('./router/usersRouter.js');
+const cateRouter = require('./router/cateRouter.js');
+const comRouter = require('./router/comRouter.js');
+const indexRouter = require('./router/indexRouter.js');
+const resetRouter = require('./router/resetRouter.js');
+const postAddRouter = require('./router/postAddRouter.js');
+const postsRouter = require('./router/postsRouter.js')
 const lastrouter = require('./router/404.js')
 // create server
 
@@ -17,6 +23,12 @@ app.use('/static/uploads',express.static('./uploads'))
 // use router middleware
 
 app.use(userRouter);
+app.use(cateRouter);
+app.use(comRouter);
+app.use(indexRouter);
+app.use(resetRouter);
+app.use(postAddRouter);
+app.use(postsRouter)
 
 
 //config view engine
