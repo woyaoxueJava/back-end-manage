@@ -14,6 +14,8 @@ const lastrouter = require('./router/404.js')
 
 let app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}))
 //static repository
 app.use('/public',express.static('./public'));
 app.use('/uploads',express.static('./uploads'));
@@ -37,16 +39,18 @@ app.set('view engine','ejs');
 
 //config body-parser
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}))
+
 
 
 //slove request
 
 app.get('/',(req,res) => {
+    
     res.send('home');
 });
-
+// app.post('/',(req,res) => {
+//     res.send(req.body)
+// })
 //listen the server
 app.use(lastrouter);
 app.listen(3000,() => {

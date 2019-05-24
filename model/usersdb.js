@@ -18,6 +18,11 @@ module.exports = {
     delUser(id,callback) {
         let sqlStr = `delete from users where id = ${id}`;
         db.query(sqlStr,callback)
+    },
+    delAll(obj,callback) {
+        let str = `(${obj.join()})`
+        let sqlStr = `delete from users where id in ${str}`
+        db.query(sqlStr,callback);
     }
 }
 

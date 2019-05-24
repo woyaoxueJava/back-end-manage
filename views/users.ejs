@@ -40,12 +40,12 @@
         <div class="col-md-8">
           <div class="page-action">
             <!-- show when multiple checked -->
-            <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
+            <a class="btn btn-danger btn-sm" href="javascript:;" style="visibility:hidden;" id="delAll">批量删除</a>
           </div>
           <table class="table table-striped table-bordered table-hover" id="table">
             <thead>
                <tr>
-                <th class="text-center" width="40"><input type="checkbox"></th>
+                <th class="text-center" width="40"><input type="checkbox" id="checkAll"></th>
                 <th class="text-center" width="80">头像</th>
                 <th>邮箱</th>
                 <th>别名</th>
@@ -54,10 +54,11 @@
                 <th class="text-center" width="100">操作</th>
               </tr>
             </thead>
+            <form id="userForm">
             <tbody id="tbody">
               <% for (var i = 0; i < results.length; i++) {%>
               <tr id="<%= 'tr' + results[i].id %>">
-                <td class="text-center"><input type="checkbox"></td>
+                <td class="text-center"><input type="checkbox" class="checkItem" name="item" value ="<%= results[i].id %>"></td>
                 <td class="text-center"><img class="avatar" src="<%= results[i].avatar %>"></td>
                 <td><%= results[i].email %></td>
                 <td><%= results[i].slug %></td>
@@ -70,6 +71,7 @@
               </tr>
               <% } %>
             </tbody>
+            </form>
           </table>
         </div>
       </div>
@@ -83,7 +85,7 @@
   <script type="text/html" id="userTem">
     {{each data}}
       <tr id="tr{{+ $value.id}}">
-        <td class="text-center"><input type="checkbox"></td>
+        <td class="text-center"><input type="checkbox" class="checkItem" name="item" value ="{{$value.id}}"></td>
         <td class="text-center"><img class="avatar" src=" {{ $value.avatar }} "></td>
         <td>{{ $value.email }}</td>
         <td>{{ $value.slug }}</td>
@@ -116,7 +118,7 @@
     })
   }
 
-  $('#table').on('click','.btn-danger',function(e) {
+  $('#table').on('click','.btn-danger',function(e) {//删除单个元素
     e.preventDefault();
     var id = '#tr'+this.id;
     $(id).remove();
@@ -157,6 +159,55 @@ $('#addUser').on('click',function(e){
 
 })
 
+//全选功能
+$('#checkAll').on('click',() => {
+
+  let check = $('#checkAll').prop('checked');
+
+  $('.checkItem').prop('checked',check);
+
+  let show = check ? 'visible' : 'hidden';
+
+  $('#delAll').css('visibility',show);
+});
+
+$('#tbody').on('click','.checkItem',function() {
+        var total = $('.checkItem').length;//checkbox数量
+        var checkedItem = 0;//被选中的checkbox数量
+        for (var i = 0; i < total; i++) {
+          checkedItem = $('.checkItem')[i].checked ? checkedItem + 1 : checkedItem;
+        }
+        let show = (checkedItem >= 2) ? 'visible' : 'hidden';
+
+       $('#delAll').css('visibility',show);
+        var check = (total == checkedItem) ? true : false;
+       $('#checkAll').prop('checked',check)
+        
+})
+
+$('#delAll').on('click',function() {
   
+  var data = $('#userForm').serialize();
+
+    $.ajax({
+      type: 'POST',
+      url: '/delAll',
+      data: data,
+      dataType: 'json'
+    }).then((res)=>{
+      if (res.status == 200) {
+        //在前台删除在后台中会被删除的元素
+        // let total = $('.checkItem').length;
+        // for (var i = 0; i < total; i++) {
+        //  if ($('.checkItem')[i].checked) {
+        //   console.log(i)
+        //  }
+        // }
+        getAllUser()
+      } else {
+        alert(res.msg)
+      }
+    })
+})
   
   </script>

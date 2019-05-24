@@ -1,5 +1,6 @@
 const usersdb = require('../model/usersdb.js');
 const formidable = require('formidable');
+
 module.exports = {
     getUsers(req,res) {
         usersdb.getUsers((err,results) => {//对数据库操作的结果进行进一步处理
@@ -75,6 +76,29 @@ module.exports = {
     },
     login(req,res) {
         res.render('login')
+    },
+    delAll(req,res) {
+        // console.log(req.body.item)
+        let obj = req.body.item;
+        usersdb.delAll(obj,(err,results) => {
+                if (err) {
+                    res.send({
+                        status: 400,
+                        msg: 'failed',
+                    })
+                } else {
+                    res.send({
+                        status: 200,
+                        msg: 'success',
+                        data: results
+                    })
+                }
+        })
+        // let form = new formidable.IncomingForm();
+        // form.parse(req,(err,fields,files) => {
+        //     console.log(fields)
+        // })
+
     }
 }
 

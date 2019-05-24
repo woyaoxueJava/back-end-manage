@@ -10,6 +10,7 @@ router.get('/users',userC.getUsers)
       .get('/delUser',userC.delUser)
       .get('/profile',userC.profile)
       .get('/login',userC.login)
+      .post('/delAll',userC.delAll)
 
 
 
