@@ -42,6 +42,7 @@
             <!-- show when multiple checked -->
             <a class="btn btn-danger btn-sm" href="javascript:;" style="visibility:hidden;" id="delAll">批量删除</a>
           </div>
+          <form id="userForm">
           <table class="table table-striped table-bordered table-hover" id="table">
             <thead>
                <tr>
@@ -54,8 +55,9 @@
                 <th class="text-center" width="100">操作</th>
               </tr>
             </thead>
-            <form id="userForm">
+            
             <tbody id="tbody">
+                
               <% for (var i = 0; i < results.length; i++) {%>
               <tr id="<%= 'tr' + results[i].id %>">
                 <td class="text-center"><input type="checkbox" class="checkItem" name="item" value ="<%= results[i].id %>"></td>
@@ -70,9 +72,11 @@
                 </td>
               </tr>
               <% } %>
+            
             </tbody>
-            </form>
+            
           </table>
+        </form>
         </div>
       </div>
     </div>
@@ -188,7 +192,8 @@ $('#tbody').on('click','.checkItem',function() {
 $('#delAll').on('click',function() {
   
   var data = $('#userForm').serialize();
-
+  //table子代中不能使用form标签，如果使用会出现，form在table标签外部的情形。
+  console.dir(data);
     $.ajax({
       type: 'POST',
       url: '/delAll',
@@ -197,13 +202,16 @@ $('#delAll').on('click',function() {
     }).then((res)=>{
       if (res.status == 200) {
         //在前台删除在后台中会被删除的元素
-        // let total = $('.checkItem').length;
-        // for (var i = 0; i < total; i++) {
-        //  if ($('.checkItem')[i].checked) {
-        //   console.log(i)
-        //  }
-        // }
-        getAllUser()
+        let total = $('.checkItem').length;
+        for (let i = 0; i < total; i++) {
+         if ($('.checkItem')[i].checked) {
+          
+          $('.checkItem')[i].parentElement.parentElement.remove()
+          i--;
+          total--;
+         }
+        }
+        // getAllUser()
       } else {
         alert(res.msg)
       }
